@@ -58,9 +58,20 @@ struct CreatePasscode: View {
                             addToPasscode(number: "\(number)")
                         }
                     }
+                    
                     Spacer()
-                    PasscodeButton(number: "Del") {
-                        deleteLast()
+                    
+                    // Add the 0 button at the bottom left
+                    PasscodeButton(number: "0") {
+                        addToPasscode(number: "0")
+                    }
+                    
+                    // Add a custom backspace button at the bottom right
+                    Button(action: deleteLast) {
+                        Image(systemName: "delete.left")
+                            .font(.title)
+                            .foregroundColor(.primary)
+                            .frame(width: 60, height: 60)
                     }
                 }
                 .padding(.horizontal, 40)
