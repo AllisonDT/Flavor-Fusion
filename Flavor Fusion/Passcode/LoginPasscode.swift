@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CryptoKit
+import LocalAuthentication
 
 /// A view for logging in using a passcode.
 ///
@@ -20,7 +21,7 @@ struct LoginPasscode: View {
     @State private var isLoginSuccessful: Bool = false
     @State private var showIncorrectPasscodeMessage: Bool = false
     @State private var isPasscodeVisible: Bool = false
-
+    
     // Layout for the passcode buttons
     let gridLayout = [
         GridItem(.flexible()),
@@ -114,6 +115,7 @@ struct LoginPasscode: View {
                 ListTabView()
                     .navigationBarBackButtonHidden(true)
             }
+            .onAppear(perform: authenticateWithFaceID)
         }
     }
     
@@ -155,6 +157,39 @@ struct LoginPasscode: View {
             showIncorrectPasscodeMessage = true // Set flag to show the incorrect passcode message
         }
     }
+    
+    /// Authenticates the user using Face ID or Touch ID.
+    ///
+    /// If authentication is successful, automatically fills in the passcode.
+    func authenticateWithFaceID() {
+        let context = LAContext()
+        var error: NSError?
+
+        // Check if the device can use Face ID or Touch ID
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            let reason = "Authenticate to access your passcode."
+
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
+                if success {
+                    DispatchQueue.main.async {
+                        // Retrieve the stored passcode from UserDefaults
+                        if let storedPasscode = UserDefaults.standard.string(forKey: "passcode") {
+                            self.passcode = storedPasscode
+                            self.isPasscodeVisible = true // Make sure the passcode is visible in the text field
+                            self.isLoginSuccessful = true // Navigate to ListTabView automatically
+                        }
+                    }
+                } else {
+                    // Handle authentication failure
+                    print("Authentication failed")
+                }
+            }
+        } else {
+            // No biometrics available
+            print("Biometrics not available")
+        }
+    }
+
 }
 
 struct LoginPasscode_Previews: PreviewProvider {

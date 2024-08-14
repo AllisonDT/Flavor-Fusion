@@ -88,6 +88,7 @@
 		BE1C9D812BB8D3A400D597FC /* SpiceBlendSelections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpiceBlendSelections.swift; sourceTree = "<group>"; };
 		BE1C9D872BBA487D00D597FC /* RecipeBookBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeBookBackground.swift; sourceTree = "<group>"; };
 		BE1C9D892BBA488F00D597FC /* ListBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListBackground.swift; sourceTree = "<group>"; };
+		BE205C862C6D7A2B006ECF78 /* Flavor-Fusion-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Flavor-Fusion-Info.plist"; sourceTree = SOURCE_ROOT; };
 		BE2431D52BF04CE400B77990 /* BLEManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEManager.swift; sourceTree = "<group>"; };
 		BE2431D72BF051DB00B77990 /* ExistingBlendView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingBlendView.swift; sourceTree = "<group>"; };
 		BE35352D2B86B69100806E7D /* AddRecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRecipeView.swift; sourceTree = "<group>"; };
@@ -169,6 +170,7 @@
 		BE02B7F42B719A9F0093AA4F /* Flavor Fusion */ = {
 			isa = PBXGroup;
 			children = (
+				BE205C862C6D7A2B006ECF78 /* Flavor-Fusion-Info.plist */,
 				BE2431D22BF04BBD00B77990 /* Data Fusion */,
 				BE1C9D862BBA485C00D597FC /* Backgrounds */,
 				BE95D81C2BB1D2B200A2E59C /* Passcode */,
@@ -681,8 +683,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Flavor-Fusion-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Flavor Fusion";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "This app uses Face ID to securely log you in using your saved passcode.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -697,7 +701,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "FF.Flavor-Fusion";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_DOCUMENTATION_COMPILER = NO;
@@ -724,8 +728,10 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Flavor-Fusion-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Flavor Fusion";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "This app uses Face ID to securely log you in using your saved passcode.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -740,7 +746,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "FF.Flavor-Fusion";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_DOCUMENTATION_COMPILER = NO;
