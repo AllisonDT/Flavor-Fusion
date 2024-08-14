@@ -16,11 +16,40 @@ struct SettingsView: View {
     @State private var currentPasscode: String = ""
     @State private var newPasscode: String = ""
     @State private var confirmPasscode: String = ""
-    @State private var isPasscodeChangeSuccessful: Bool = false
-    @State private var showIncorrectPasscodeMessage: Bool = false
     
     @State private var displayName: String = UserDefaults.standard.string(forKey: "displayName") ?? ""
-    @State private var isDisplayNameChangeSuccessful: Bool = false
+    
+    @State private var alertType: AlertType? = nil
+    
+    enum AlertType: Identifiable {
+        case incorrectPasscode
+        case passcodeChanged
+        case displayNameChanged
+        
+        var id: String {
+            switch self {
+            case .incorrectPasscode: return "incorrectPasscode"
+            case .passcodeChanged: return "passcodeChanged"
+            case .displayNameChanged: return "displayNameChanged"
+            }
+        }
+        
+        var title: String {
+            switch self {
+            case .incorrectPasscode: return "Incorrect Passcode"
+            case .passcodeChanged: return "Passcode Changed"
+            case .displayNameChanged: return "Display Name Changed"
+            }
+        }
+        
+        var message: String {
+            switch self {
+            case .incorrectPasscode: return "Please enter the correct current passcode."
+            case .passcodeChanged: return "Your passcode has been successfully changed."
+            case .displayNameChanged: return "Your display name has been successfully changed."
+            }
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -85,14 +114,8 @@ struct SettingsView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationBarTitle("Settings", displayMode: .inline)
-            .alert(isPresented: $showIncorrectPasscodeMessage) {
-                Alert(title: Text("Incorrect Passcode"), message: Text("Please enter the correct current passcode."), dismissButton: .default(Text("OK")))
-            }
-            .alert(isPresented: $isPasscodeChangeSuccessful) {
-                Alert(title: Text("Passcode Changed"), message: Text("Your passcode has been successfully changed."), dismissButton: .default(Text("OK")))
-            }
-            .alert(isPresented: $isDisplayNameChangeSuccessful) {
-                Alert(title: Text("Display Name Changed"), message: Text("Your display name has been successfully changed."), dismissButton: .default(Text("OK")))
+            .alert(item: $alertType) { alertType in
+                Alert(title: Text(alertType.title), message: Text(alertType.message), dismissButton: .default(Text("OK")))
             }
         }
     }
@@ -108,21 +131,21 @@ struct SettingsView: View {
             if newPasscode == confirmPasscode {
                 UserDefaults.standard.set(newPasscode, forKey: "passcode")
                 print("Passcode changed successfully!")
-                isPasscodeChangeSuccessful = true
+                alertType = .passcodeChanged
             } else {
                 print("New passcode and confirm passcode do not match.")
-                showIncorrectPasscodeMessage = true
+                alertType = .incorrectPasscode
             }
         } else {
             print("Incorrect current passcode. Please try again.")
-            showIncorrectPasscodeMessage = true
+            alertType = .incorrectPasscode
         }
     }
     
     /// Changes the display name and saves it to UserDefaults.
     func changeDisplayName() {
         UserDefaults.standard.set(displayName, forKey: "displayName")
-        isDisplayNameChangeSuccessful = true
+        alertType = .displayNameChanged
     }
 }
 
