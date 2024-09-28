@@ -85,5 +85,4 @@ struct BlendingView: View {
     BlendingView(spiceName: "Example Spice", servings: 1, ingredients: [
         Ingredient(name: "Salt", amount: 1.0, unit: "T", containerNumber: 1)
     ], onComplete: {})
-        .environmentObject(BLEManager(spiceDataViewModel: SpiceDataViewModel()))
 }

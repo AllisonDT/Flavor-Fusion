@@ -12,12 +12,17 @@ import UserNotifications
 struct FlavorFusionApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    @StateObject private var bleManager = BLEManager(spiceDataViewModel: SpiceDataViewModel())
+    @State private var bleManager: BLEManager?  // Declare BLEManager as an optional
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(bleManager)
+                .environmentObject(bleManager ?? BLEManager(spiceDataViewModel: SpiceDataViewModel()))  // Provide a default if bleManager is nil
+                .onAppear {
+                    if bleManager == nil {
+                        bleManager = BLEManager(spiceDataViewModel: SpiceDataViewModel())
+                    }
+                }
         }
     }
 }

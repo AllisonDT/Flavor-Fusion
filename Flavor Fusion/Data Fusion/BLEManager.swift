@@ -28,21 +28,31 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
         self.spiceDataViewModel = spiceDataViewModel
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: nil)
-        print("Central Manager initialized.")
-    }
-
-    func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        print("Central Manager did update state: \(central.state.rawValue)")
-        
-        if central.state == .poweredOn {
-            print("Bluetooth is powered on. Starting scan for peripherals...")
-            centralManager.scanForPeripherals(withServices: [spiceServiceUUID], options: nil)
-        } else {
-            print("Bluetooth is not available.")
-            useExampleDataIfNeeded()
+        // Consider checking the state after initialization
+        if centralManager.state == .poweredOn {
+            // Start scanning or take necessary action
         }
     }
 
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
+        switch central.state {
+        case .poweredOn:
+            // Bluetooth is available
+            centralManager.scanForPeripherals(withServices: [spiceServiceUUID], options: nil)
+        case .poweredOff:
+            print("Bluetooth is powered off. Please turn it on.")
+        case .unauthorized:
+            print("This app is not authorized to use Bluetooth.")
+        case .unsupported:
+            print("Bluetooth is not supported on this device.")
+        case .resetting:
+            print("Bluetooth is resetting. Please wait.")
+        case .unknown:
+            print("Bluetooth state is unknown.")
+        @unknown default:
+            print("A new state was added that is not handled.")
+        }
+    }
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         print("Discovered peripheral: \(peripheral.name ?? "Unknown") with RSSI: \(RSSI)")
         connectedPeripheral = peripheral
@@ -99,9 +109,9 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
             return
         }
         
-        print("Received update for characteristic: \(characteristic.uuid).")
+        // print("Received update for characteristic: \(characteristic.uuid).")
         if let data = characteristic.value {
-            print("Data received: \(data as NSData)")
+            // print("Data received: \(data as NSData)")
             isDataRetrievedViaBluetooth = true
             
             // Process data on a background thread to avoid UI lag
@@ -118,22 +128,22 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
         if characteristic.uuid == spiceMixedCharacteristicUUID {
             // Process the boolean data for spice mixed status
             let isMixed = data[0] != 0
-            print("Processed boolean: is order mixed? \(isMixed)")
+            // print("Processed boolean: is order mixed? \(isMixed)")
             
             // Update UI on the main thread
             DispatchQueue.main.async { [weak self] in
                 self?.isOrderMixed = isMixed
-                print("Order mixed status updated: \(isMixed)")
+                // print("Order mixed status updated: \(isMixed)")
             }
         } else if characteristic.uuid == trayStatusCharacteristicUUID {
             // Process the boolean data for tray status
             let trayEmpty = data[0] != 0
-            print("Processed boolean: is tray empty? \(trayEmpty)")
+            // print("Processed boolean: is tray empty? \(trayEmpty)")
             
             // Update UI on the main thread
             DispatchQueue.main.async { [weak self] in
                 self?.isTrayEmpty = trayEmpty
-                print("Tray empty status updated: \(trayEmpty)")
+                // print("Tray empty status updated: \(trayEmpty)")
             }
         }
     }

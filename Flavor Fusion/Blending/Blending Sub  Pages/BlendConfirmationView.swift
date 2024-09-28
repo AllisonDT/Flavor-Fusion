@@ -17,15 +17,29 @@ import SwiftUI
 ///   - servings: The number of servings selected by the user.
 ///   - ingredients: The list of ingredients to be included in the blend.
 ///   - onConfirm: A closure that is called when the "Confirm" button is pressed.
+
+enum ActiveAlert: Identifiable {
+    case trayNotEmpty
+
+    var id: Int {
+        hashValue
+    }
+}
+
 struct BlendConfirmationView: View {
     let spiceName: String
     let servings: Int
     let ingredients: [Ingredient]
     let onConfirm: () -> Void
-    
+
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var spiceDataViewModel: SpiceDataViewModel // Add the view model
-    
+    @ObservedObject var spiceDataViewModel: SpiceDataViewModel // Existing view model
+    @EnvironmentObject var bleManager: BLEManager                 // Add BLEManager
+
+    @State private var showTrayNotEmptyAlert = false           // State for showing the alert
+    @State private var waitingForTrayToBeEmpty = false         // State to wait for the tray to be emptied
+    @State private var activeAlert: ActiveAlert?
+
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 20) {
@@ -33,7 +47,7 @@ struct BlendConfirmationView: View {
                     .font(.largeTitle)
                     .bold()
                     .padding(.top)
-                
+
                 Group {
                     Text("Spice Name")
                         .font(.headline)
@@ -41,19 +55,19 @@ struct BlendConfirmationView: View {
                     Text(spiceName)
                         .font(.title2)
                         .padding(.bottom)
-                    
+
                     Text("Servings")
                         .font(.headline)
                         .foregroundColor(.secondary)
                     Text("\(servings)")
                         .font(.title2)
                         .padding(.bottom)
-                    
+
                     Text("Ingredients")
                         .font(.headline)
                         .foregroundColor(.secondary)
                 }
-                
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: 10) {
                         ForEach(ingredients, id: \.name) { ingredient in
@@ -69,13 +83,18 @@ struct BlendConfirmationView: View {
                     }
                 }
                 .frame(maxHeight: 200)
-                
+
                 Spacer()
-                
+
                 HStack {
                     Button(action: {
-                        subtractSpicesInOunces() // Subtract spice amounts in ounces
-                        onConfirm()
+                        if !bleManager.isTrayEmpty {
+                            activeAlert = .trayNotEmpty
+                            waitingForTrayToBeEmpty = true
+                        } else {
+                            subtractSpicesInOunces()
+                            onConfirm()
+                        }
                     }) {
                         Text("Confirm")
                             .font(.headline)
@@ -99,6 +118,25 @@ struct BlendConfirmationView: View {
                 Image(systemName: "xmark")
                     .foregroundColor(.primary)
             })
+            // Move the alert to be attached directly to the VStack
+            .alert(item: $activeAlert) { alert in
+                switch alert {
+                case .trayNotEmpty:
+                    return Alert(
+                        title: Text("Tray Not Empty"),
+                        message: Text("Please empty the tray before proceeding."),
+                        dismissButton: .default(Text("OK"))
+                    )
+                }
+            }
+            // Monitor changes to isTrayEmpty
+            .onChange(of: bleManager.isTrayEmpty) {
+                if waitingForTrayToBeEmpty && bleManager.isTrayEmpty {
+                    waitingForTrayToBeEmpty = false
+                    subtractSpicesInOunces()
+                    onConfirm()
+                }
+            }
         }
     }
 
@@ -116,7 +154,7 @@ struct BlendConfirmationView: View {
         var upperDenominator = 0
         var middleNumerator = 1
         var middleDenominator = 1
-        
+
         while true {
             let middle = Double(middleNumerator) / Double(middleDenominator)
             if abs(middle - number) < tolerance {
@@ -156,12 +194,12 @@ struct BlendConfirmationView: View {
     private func subtractSpicesInOunces() {
         for ingredient in ingredients {
             let amountInOunces = convertToOunces(amount: ingredient.amount, unit: ingredient.unit)
-            
+
             // Find the spice by name instead of container number
             if let spiceIndex = spiceDataViewModel.spices.firstIndex(where: { $0.name == ingredient.name }) {
                 let currentAmount = spiceDataViewModel.spices[spiceIndex].spiceAmount
                 let updatedAmount = currentAmount - amountInOunces
-                
+
                 if updatedAmount >= 0 {
                     spiceDataViewModel.updateSpiceAmountInOunces(containerNumber: spiceDataViewModel.spices[spiceIndex].containerNumber, newAmountInOunces: updatedAmount)
                 } else {

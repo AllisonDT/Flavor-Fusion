@@ -81,7 +81,7 @@ public class SpiceDataViewModel: ObservableObject {
            let decodedSpices = try? JSONDecoder().decode([Spice].self, from: savedSpices) {
             self.spices = decodedSpices
             spiceData = decodedSpices
-            print("Spices loaded from UserDefaults: \(spices)")
+            // print("Spices loaded from UserDefaults: \(spices)")
         } else {
             print("No saved spices found in UserDefaults. Attempting to load from iCloud.")
             loadSpicesFromiCloud()
