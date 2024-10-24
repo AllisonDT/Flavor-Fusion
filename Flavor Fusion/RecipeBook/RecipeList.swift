@@ -27,36 +27,39 @@ struct RecipeList: View {
     }
 
     var body: some View {
-        NavigationView {
-            VStack {
-                HStack {
-                    SearchBar(searchText: $searchText)
-                    Spacer()
-                    Button(action: {
-                        isAddRecipeViewPresented.toggle()
-                    }) {
-                        Image(systemName: "plus.circle")
-                            .font(.system(size: 24))
-                            .padding()
-                            .foregroundColor(.blue)
-                    }
-                }
-                .padding([.leading, .trailing, .top])
+        VStack {
+            // Title as Text at the top
+            Text("Recipes")
+                .font(.title)
+                .fontWeight(.bold)
 
-                ScrollView {
-                    VStack(spacing: 10) {
-                        ForEach(filteredRecipes) { recipe in
-                            RecipeRow(recipe: recipe, recipeStore: recipeStore, spiceDataViewModel: spiceDataViewModel)
-                                .padding(.horizontal)
-                        }
+            HStack {
+                SearchBar(searchText: $searchText)
+                Spacer()
+                Button(action: {
+                    isAddRecipeViewPresented.toggle()
+                }) {
+                    Image(systemName: "plus.circle")
+                        .font(.system(size: 24))
+                        .padding()
+                        .foregroundColor(.blue)
+                }
+            }
+            .padding([.leading, .trailing])
+
+            ScrollView {
+                VStack(spacing: 10) {
+                    ForEach(filteredRecipes) { recipe in
+                        RecipeRow(recipe: recipe, recipeStore: recipeStore, spiceDataViewModel: spiceDataViewModel)
+                            .padding(.horizontal)
                     }
                 }
             }
-            .background(Color(.systemGroupedBackground))
-            .navigationBarTitle("Recipes", displayMode: .inline)
         }
+        .background(Color(.systemGroupedBackground))
         .sheet(isPresented: $isAddRecipeViewPresented) {
             AddRecipeView(isPresented: $isAddRecipeViewPresented, recipeStore: recipeStore)
         }
     }
 }
+

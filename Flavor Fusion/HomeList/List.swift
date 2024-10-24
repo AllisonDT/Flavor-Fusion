@@ -12,17 +12,6 @@ import UserNotifications
 ///
 /// `List` presents a view where users can view, select, and blend spices. It also tracks when spices are running low
 /// and triggers a notification. Users can refresh the list, check the last update time, and interact with the spices via popups.
-///
-/// - Parameters:
-///   - isSelecting: A boolean state that determines if the user is in spice selection mode.
-///   - isBlendPopupVisible: A boolean state controlling the visibility of the blend popup view.
-///   - isSpicePopupVisible: A boolean state controlling the visibility of the spice popup view for the selected spice.
-///   - selectedSpice: An optional `Spice` object representing the currently selected spice for detailed view.
-///   - recipeStore: An `ObservedObject` for managing the list of recipes.
-///   - displayName: A string representing the display name of the user, fetched from `UserDefaults`.
-///   - isLoading: A boolean state that shows if the spices are being refreshed.
-///   - lastUpdated: An optional `Date` representing the last time the spice list was updated.
-///   - spiceDataViewModel: An `ObservedObject` for managing the spice data.
 struct List: View {
     @State private var isSelecting: Bool = false
     @State private var isBlendPopupVisible: Bool = false
@@ -35,28 +24,34 @@ struct List: View {
     @ObservedObject var spiceDataViewModel = SpiceDataViewModel()
 
     var body: some View {
-        NavigationView {
+        VStack(spacing: 0) {
+            // Title outside of the ScrollView
+            Text("\(displayName)'s Cabinet")
+                .font(.title)
+                .fontWeight(.bold)
+            
+            // Always show the last updated date
+            Text("Last updated: \(formattedDate(lastUpdated ?? Date()))")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .padding(.bottom, 10)
+
+            Button(action: {
+                isBlendPopupVisible.toggle()
+            }) {
+                Text("BLEND")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+                    .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
+            }
+            .padding(.horizontal)
+
             ScrollView {
                 VStack {
-                    // Always show the last updated date
-                    Text("Last updated: \(formattedDate(lastUpdated ?? Date()))")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding(.bottom, 10)
-
-                    Button(action: {
-                        isBlendPopupVisible.toggle()
-                    }) {
-                        Text("BLEND")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                            .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
-                    }
-                    .padding(.horizontal)
                     
                     HStack {
                         VStack {
@@ -101,7 +96,6 @@ struct List: View {
                     SpicePopupView(spice: selectedSpice, recipes: recipeStore.recipes, isPresented: $isSpicePopupVisible, spiceDataViewModel: spiceDataViewModel)
                 }
             }
-            .navigationBarTitle("\(displayName)'s Cabinet", displayMode: .inline)
             .onAppear {
                 requestNotificationPermission()
                 checkSpiceLevels()
