@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "BE02B7F12B719A9F0093AA4F"
-               BuildableName = "Flavor Fusion ipad.app"
-               BlueprintName = "Flavor Fusion ipad"
+               BuildableName = "Flavor Fusion.app"
+               BlueprintName = "Flavor Fusion"
                ReferencedContainer = "container:Flavor Fusion.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -68,8 +68,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BE02B7F12B719A9F0093AA4F"
-            BuildableName = "Flavor Fusion ipad.app"
-            BlueprintName = "Flavor Fusion ipad"
+            BuildableName = "Flavor Fusion.app"
+            BlueprintName = "Flavor Fusion"
             ReferencedContainer = "container:Flavor Fusion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -98,8 +98,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BE02B7F12B719A9F0093AA4F"
-            BuildableName = "Flavor Fusion ipad.app"
-            BlueprintName = "Flavor Fusion ipad"
+            BuildableName = "Flavor Fusion.app"
+            BlueprintName = "Flavor Fusion"
             ReferencedContainer = "container:Flavor Fusion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -12,35 +12,36 @@ import SwiftUI
 /// `AboutView` displays navigation links to various sections such as Project Overview,
 /// User Manual, Privacy Information, and Meet the Team. It also includes an icon
 /// at the bottom of the view.
+import SwiftUI
+
 struct AboutView: View {
     var body: some View {
-        VStack(spacing: 0) {
-            // Title outside the ScrollView
-            Text("About Flavor Fusion")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.bottom)
-
+        NavigationView {
             ScrollView {
-                VStack(spacing: 10) {
-                    NavigationLink(destination: ProjectOverviewView()) {
-                        CustomListItem(title: "Project Overview")
+                VStack {
+                    VStack(spacing: 10) { // Adjust spacing to match RecipeRow
+                        NavigationLink(destination: ProjectOverviewView()) {
+                            CustomListItem(title: "Project Overview")
+                        }
+                        NavigationLink(destination: UserManualView()) {
+                            CustomListItem(title: "User Manual")
+                        }
+                        NavigationLink(destination: PrivacyInfoView()) {
+                            CustomListItem(title: "Privacy Information")
+                        }
+                        NavigationLink(destination: TeamView()) {
+                            CustomListItem(title: "Meet the Team")
+                        }
                     }
-                    NavigationLink(destination: UserManualView()) {
-                        CustomListItem(title: "User Manual")
-                    }
-                    NavigationLink(destination: PrivacyInfoView()) {
-                        CustomListItem(title: "Privacy Information")
-                    }
-                    NavigationLink(destination: TeamView()) {
-                        CustomListItem(title: "Meet the Team")
-                    }
+                    .padding(.horizontal)
+                    
+                    Spacer()
                 }
-                .padding(.horizontal)
+                .padding(.top)
             }
             .background(Color(.systemGroupedBackground).edgesIgnoringSafeArea(.all))
+            .navigationBarTitle("About Flavor Fusion", displayMode: .inline)
         }
-        .background(Color(.systemGroupedBackground))
     }
 }
 
@@ -67,6 +68,7 @@ struct CustomListItem: View {
                 .fill(Color(UIColor.systemBackground))
                 .shadow(color: .gray, radius: 2, x: 0, y: 2)
         )
+        .padding(.vertical, 4)
     }
 }
 

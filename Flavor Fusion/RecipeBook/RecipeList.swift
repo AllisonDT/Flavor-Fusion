@@ -27,36 +27,34 @@ struct RecipeList: View {
     }
 
     var body: some View {
-        VStack {
-            // Title as Text at the top
-            Text("Recipes")
-                .font(.title)
-                .fontWeight(.bold)
-
-            HStack {
-                SearchBar(searchText: $searchText)
-                Spacer()
-                Button(action: {
-                    isAddRecipeViewPresented.toggle()
-                }) {
-                    Image(systemName: "plus.circle")
-                        .font(.system(size: 24))
-                        .padding()
-                        .foregroundColor(.blue)
+        NavigationView {
+            VStack {
+                HStack {
+                    SearchBar(searchText: $searchText)
+                    Spacer()
+                    Button(action: {
+                        isAddRecipeViewPresented.toggle()
+                    }) {
+                        Image(systemName: "plus.circle")
+                            .font(.system(size: 24))
+                            .padding()
+                            .foregroundColor(.blue)
+                    }
                 }
-            }
-            .padding([.leading, .trailing])
+                .padding([.leading, .trailing, .top])
 
-            ScrollView {
-                VStack(spacing: 10) {
-                    ForEach(filteredRecipes) { recipe in
-                        RecipeRow(recipe: recipe, recipeStore: recipeStore, spiceDataViewModel: spiceDataViewModel)
-                            .padding(.horizontal)
+                ScrollView {
+                    VStack(spacing: 10) {
+                        ForEach(filteredRecipes) { recipe in
+                            RecipeRow(recipe: recipe, recipeStore: recipeStore, spiceDataViewModel: spiceDataViewModel)
+                                .padding(.horizontal)
+                        }
                     }
                 }
             }
+            .background(Color(.systemGroupedBackground))
+            .navigationBarTitle("Recipes", displayMode: .inline)
         }
-        .background(Color(.systemGroupedBackground))
         .sheet(isPresented: $isAddRecipeViewPresented) {
             AddRecipeView(isPresented: $isAddRecipeViewPresented, recipeStore: recipeStore)
         }

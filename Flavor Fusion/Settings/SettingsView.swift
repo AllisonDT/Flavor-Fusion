@@ -57,13 +57,7 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Title outside the ScrollView
-            Text("Settings")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.bottom)
-
+        NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     // Bluetooth connection status
@@ -158,14 +152,14 @@ struct SettingsView: View {
                     }
                     .padding(.horizontal)
                 }
-                .padding(.bottom, 20) // Adjust padding to make space below content
+                .padding()
             }
             .background(Color(.systemGroupedBackground))
+            .navigationBarTitle("Settings", displayMode: .inline)
             .alert(item: $alertType) { alertType in
                 Alert(title: Text(alertType.title), message: Text(alertType.message), dismissButton: .default(Text("OK")))
             }
         }
-        .background(Color(.systemGroupedBackground))
     }
     
     func changePasscode() {
@@ -202,6 +196,8 @@ struct SettingsView: View {
     }
 }
 
+
 #Preview {
     SettingsView()
 }
+
