@@ -32,51 +32,55 @@ struct BlendConfirmationView: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Blend Created")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.top)
-                
-                Group {
-                    Text("Spice Name")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    Text(spiceName)
-                        .font(.title2)
-                        .padding(.bottom)
+            ZStack {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("Blend Created")
+                        .font(.largeTitle)
+                        .bold()
+                        .padding(.top)
                     
-                    Text("Servings")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    Text("\(servings)")
-                        .font(.title2)
-                        .padding(.bottom)
+                    Group {
+                        Text("Spice Name")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                        Text(spiceName)
+                            .font(.title2)
+                            .padding(.bottom)
+                        
+                        Text("Servings")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                        Text("\(servings)")
+                            .font(.title2)
+                            .padding(.bottom)
+                        
+                        Text("Ingredients")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                    }
                     
-                    Text("Ingredients")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                }
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
-                        ForEach(ingredients, id: \.name) { ingredient in
-                            HStack {
-                                Text("\(ingredient.name):")
-                                    .font(.body)
-                                Spacer()
-                                Text("\(formatAmount(amount: ingredient.amount, unit: ingredient.unit))")
-                                    .font(.body)
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 10) {
+                            ForEach(ingredients, id: \.name) { ingredient in
+                                HStack {
+                                    Text("\(ingredient.name):")
+                                        .font(.body)
+                                    Spacer()
+                                    Text("\(formatAmount(amount: ingredient.amount, unit: ingredient.unit))")
+                                        .font(.body)
+                                }
+                                .padding(.leading, 10)
                             }
-                            .padding(.leading, 10)
                         }
                     }
+                    .frame(maxHeight: 200)
+                    
+                    Spacer()
                 }
-                .frame(maxHeight: 200)
+                .padding()
                 
-                Spacer()
-                
-                HStack {
+                VStack {
+                    Spacer()
                     Button(action: {
                         if bleManager.isBluetoothConnected && bleManager.connectedPeripheral != nil {
                             if subtractSpicesInOunces() {
@@ -107,9 +111,7 @@ struct BlendConfirmationView: View {
                         )
                     }
                 }
-                .padding(.bottom)
             }
-            .padding()
             .background(Color(.systemGroupedBackground))
             .navigationBarTitle("Confirmation", displayMode: .inline)
             .navigationBarItems(trailing: Button(action: {

@@ -33,79 +33,78 @@ struct MixRecipePreview: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    Text(recipe.name)
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundColor(.primary)
-                        .padding(.top)
-                    
-                    HStack {
-                        Text("Servings")
-                            .font(.title3)
+            ZStack {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text(recipe.name)
+                            .font(.largeTitle)
                             .bold()
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Picker("Servings", selection: $selectedServings) {
-                            ForEach(1..<21, id: \.self) { serving in
-                                Text("\(serving)").tag(serving)
+                            .foregroundColor(.primary)
+                            .padding(.top)
+                        
+                        HStack {
+                            Text("Servings")
+                                .font(.title3)
+                                .bold()
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Picker("Servings", selection: $selectedServings) {
+                                ForEach(1..<21, id: \.self) { serving in
+                                    Text("\(serving)").tag(serving)
+                                }
+                            }
+                            .pickerStyle(MenuPickerStyle())
+                            .padding(.horizontal)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
+                        }
+                        .padding(.horizontal)
+                        
+                        Divider()
+                        
+                        Text("Ingredients:")
+                            .font(.title2)
+                            .bold()
+                            .foregroundColor(.primary)
+                        
+                        VStack(alignment: .leading, spacing: 10) {
+                            ForEach(recipe.ingredients, id: \.name) { ingredient in
+                                let amount = ingredient.amount * Double(selectedServings) / Double(recipe.servings)
+                                HStack {
+                                    Text(ingredient.name)
+                                        .font(.body)
+                                        .foregroundColor(.secondary)
+                                    Spacer()
+                                    Text("\(formatAmount(amount: amount, unit: ingredient.unit))")
+                                        .font(.body)
+                                        .foregroundColor(.primary)
+                                }
+                                .padding(.horizontal)
                             }
                         }
-                        .pickerStyle(MenuPickerStyle())
-                        .padding(.horizontal)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
+                        .padding(.vertical)
+                    }
+                    .padding()
+                }
+                .background(Color(.systemGroupedBackground))
+
+                VStack {
+                    Spacer()
+                    Button(action: {
+                        isBlendConfirmationViewPresented.toggle()
+                    }) {
+                        Text("BLEND")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
                     }
                     .padding(.horizontal)
-                    
-                    Divider()
-                    
-                    Text("Ingredients:")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.primary)
-                    
-                    VStack(alignment: .leading, spacing: 10) {
-                        ForEach(recipe.ingredients, id: \.name) { ingredient in
-                            let amount = ingredient.amount * Double(selectedServings) / Double(recipe.servings)
-                            HStack {
-                                Text(ingredient.name)
-                                    .font(.body)
-                                    .foregroundColor(.secondary)
-                                Spacer()
-                                Text("\(formatAmount(amount: amount, unit: ingredient.unit))")
-                                    .font(.body)
-                                    .foregroundColor(.primary)
-                            }
-                            .padding(.horizontal)
-                        }
-                    }
-                    .padding(.vertical)
-                    
-                    Spacer()
-                    
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            isBlendConfirmationViewPresented.toggle()
-                        }) {
-                            Text("BLEND")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                                .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
-                        }
-                        .padding(.horizontal)
-                        Spacer()
-                    }
                 }
-                .padding()
             }
-            .background(Color(.systemGroupedBackground))
             .sheet(isPresented: $isBlendConfirmationViewPresented) {
                 BlendConfirmationView(
                     spiceName: recipe.name,
@@ -153,6 +152,7 @@ struct MixRecipePreview: View {
             })
         }
     }
+
     
     private func formatAmount(amount: Double, unit: String) -> String {
         let fraction = convertToFraction(amount: amount)
