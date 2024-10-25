@@ -137,6 +137,9 @@ struct EditRecipeView: View {
                     }
 
                     .padding(.horizontal)
+                    .safeAreaInset(edge: .bottom, content: {
+                        Color.clear.frame(height: 20) // Adds extra space at the bottom
+                    })
                     .alert(isPresented: $showAlert) {
                         Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                     }
@@ -151,8 +154,4 @@ struct EditRecipeView: View {
             })
         }
     }
-}
-
-#Preview {
-    EditRecipeView(isPresented: .constant(false), recipeStore: RecipeStore(), recipe: Recipe(name: "Example Recipe", ingredients: [], servings: 2))
 }

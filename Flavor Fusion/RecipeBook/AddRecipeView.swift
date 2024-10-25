@@ -114,6 +114,9 @@ struct AddRecipeView: View {
                             .shadow(color: Color.black.opacity(0.2), radius: 5, x: 0, y: 2)
                     }
                     .padding(.horizontal)
+                    .safeAreaInset(edge: .bottom, content: {
+                        Color.clear.frame(height: 20) // Adds extra space at the bottom
+                    })
                     .alert(isPresented: $showAlert) {
                         Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                     }
