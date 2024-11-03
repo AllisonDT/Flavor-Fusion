@@ -175,6 +175,7 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     // MARK: - Data Sending Method
 
     func sendSpiceDataToPeripheral(data: Data) {
+        isOrderMixed = false
         guard let peripheral = connectedPeripheral else {
             print("No connected peripheral to send data to.")
             return
