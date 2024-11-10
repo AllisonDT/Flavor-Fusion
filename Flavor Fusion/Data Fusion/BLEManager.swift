@@ -12,12 +12,7 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     @Published var isBluetoothConnected: Bool = false // Track Bluetooth connection status
     @Published var isDataRetrievedViaBluetooth: Bool = false
     @Published var isOrderMixed: Bool = false   // Track whether the spice blend is done being mixed
-    @Published var isTrayEmpty: Bool = {
-        if UserDefaults.standard.object(forKey: "isTrayEmpty") == nil {
-            UserDefaults.standard.set(true, forKey: "isTrayEmpty") // Set to empty on first launch
-        }
-        return UserDefaults.standard.bool(forKey: "isTrayEmpty")
-    }()
+    @Published var isTrayEmpty: Bool = true    // Track whether the tray is empty
 
     var centralManager: CBCentralManager!
     var connectedPeripheral: CBPeripheral?
@@ -169,15 +164,14 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
                 self?.isOrderMixed = (value == "1")
                 print("Order mixed status updated: \((value == "1"))")
             }
-        }
-        if cleanMessage.hasPrefix("TRAY_EMPTY:") {
+        } else if cleanMessage.hasPrefix("TRAY_EMPTY:") {
             let value = cleanMessage.replacingOccurrences(of: "TRAY_EMPTY:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
-            let isEmpty = (value == "1")
             DispatchQueue.main.async { [weak self] in
-                self?.isTrayEmpty = isEmpty
-                UserDefaults.standard.set(isEmpty, forKey: "isTrayEmpty") // Save to UserDefaults
-                print("Tray empty status updated: \(isEmpty)")
+                self?.isTrayEmpty = (value == "1")
+                print("Tray empty status updated: \((value == "1"))")
             }
+        } else {
+            print("Unknown message received: \(cleanMessage)")
         }
     }
 
