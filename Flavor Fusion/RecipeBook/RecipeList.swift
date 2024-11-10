@@ -28,31 +28,37 @@ struct RecipeList: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                HStack {
-                    SearchBar(searchText: $searchText)
-                    Spacer()
-                    Button(action: {
-                        isAddRecipeViewPresented.toggle()
-                    }) {
-                        Image(systemName: "plus.circle")
-                            .font(.system(size: 24))
-                            .padding()
-                            .foregroundColor(.blue)
-                    }
-                }
-                .padding([.leading, .trailing, .top])
+            ZStack {
+                Color(.systemGroupedBackground).edgesIgnoringSafeArea(.all) // Background color
 
-                ScrollView {
-                    VStack(spacing: 10) {
-                        ForEach(filteredRecipes) { recipe in
-                            RecipeRow(recipe: recipe, recipeStore: recipeStore, spiceDataViewModel: spiceDataViewModel)
-                                .padding(.horizontal)
+                VStack {
+                    HStack {
+                        SearchBar(searchText: $searchText)
+                        Spacer()
+                        Button(action: {
+                            isAddRecipeViewPresented.toggle()
+                        }) {
+                            Image(systemName: "plus.circle")
+                                .font(.system(size: 24))
+                                .padding()
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding([.leading, .trailing, .top])
+
+                    ScrollView {
+                        VStack(spacing: 10) {
+                            ForEach(filteredRecipes) { recipe in
+                                RecipeRow(recipe: recipe, recipeStore: recipeStore, spiceDataViewModel: spiceDataViewModel)
+                                    .padding(.horizontal)
+                            }
                         }
                     }
                 }
+                .onTapGesture {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                }
             }
-            .background(Color(.systemGroupedBackground))
             .navigationBarTitle("Recipes", displayMode: .inline)
         }
         .sheet(isPresented: $isAddRecipeViewPresented) {

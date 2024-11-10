@@ -12,7 +12,12 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     @Published var isBluetoothConnected: Bool = false // Track Bluetooth connection status
     @Published var isDataRetrievedViaBluetooth: Bool = false
     @Published var isOrderMixed: Bool = false   // Track whether the spice blend is done being mixed
-    @Published var isTrayEmpty: Bool = true    // Track whether the tray is empty
+    @Published var isTrayEmpty: Bool = {
+        if UserDefaults.standard.object(forKey: "isTrayEmpty") == nil {
+            UserDefaults.standard.set(true, forKey: "isTrayEmpty") // Set to empty on first launch
+        }
+        return UserDefaults.standard.bool(forKey: "isTrayEmpty")
+    }()
 
     var centralManager: CBCentralManager!
     var connectedPeripheral: CBPeripheral?
@@ -154,21 +159,25 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
     }
 
     private func parseMessage(_ message: String) {
+        // Remove any trailing characters after "#" to clean up the message
+        let cleanMessage = message.components(separatedBy: "#").first ?? message
+
         // Example messages: "ORDER_MIXED:1", "TRAY_EMPTY:0"
-        if message.hasPrefix("ORDER_MIXED:") {
-            let value = message.replacingOccurrences(of: "ORDER_MIXED:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+        if cleanMessage.hasPrefix("ORDER_MIXED:") {
+            let value = cleanMessage.replacingOccurrences(of: "ORDER_MIXED:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
             DispatchQueue.main.async { [weak self] in
                 self?.isOrderMixed = (value == "1")
                 print("Order mixed status updated: \((value == "1"))")
             }
-        } else if message.hasPrefix("TRAY_EMPTY:") {
-            let value = message.replacingOccurrences(of: "TRAY_EMPTY:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        if cleanMessage.hasPrefix("TRAY_EMPTY:") {
+            let value = cleanMessage.replacingOccurrences(of: "TRAY_EMPTY:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let isEmpty = (value == "1")
             DispatchQueue.main.async { [weak self] in
-                self?.isTrayEmpty = (value == "1")
-                print("Tray empty status updated: \((value == "1"))")
+                self?.isTrayEmpty = isEmpty
+                UserDefaults.standard.set(isEmpty, forKey: "isTrayEmpty") // Save to UserDefaults
+                print("Tray empty status updated: \(isEmpty)")
             }
-        } else {
-            print("Unknown message received: \(message)")
         }
     }
 
