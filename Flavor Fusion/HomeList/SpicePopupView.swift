@@ -122,7 +122,7 @@ struct SpicePopupView: View {
                             // Save changes when the user toggles off editing mode
                             spiceDataViewModel.updateSpiceName(containerNumber: spice.containerNumber, newName: editedSpiceName)
                             
-                            if let newAmount = Double(editedSpiceAmount), newAmount <= 16.0 {
+                            if let newAmount = Double(editedSpiceAmount), newAmount <= 8.0 {
                                 spiceDataViewModel.updateSpiceAmountInOunces(containerNumber: spice.containerNumber, newAmountInOunces: newAmount)
                             }
                         } else {
@@ -158,10 +158,10 @@ struct SpicePopupView: View {
             return false
         }
         
-        if let amount = Double(editedSpiceAmount), amount > 0 && amount <= 16 {
+        if let amount = Double(editedSpiceAmount), amount > 0 && amount <= 8 {
             return true
         } else {
-            alertMessage = "Please enter a valid amount (up to 16 oz)."
+            alertMessage = "Please enter a valid amount (up to 8 oz)."
             return false
         }
     }

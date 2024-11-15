@@ -21,7 +21,7 @@ struct SpiceIndicator: View {
     var isSelected: Bool
     
     @State private var showPercentage: Bool = true
-    private let maxAmount: Double = 16.0
+    private let maxAmount: Double = 8.0
 
     var body: some View {
         ZStack {
