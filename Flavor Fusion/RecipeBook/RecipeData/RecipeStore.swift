@@ -13,9 +13,68 @@ import CloudKit
 /// `RecipeStore` conforms to `ObservableObject` to support SwiftUI data binding.
 /// It provides functions to add, remove, load, and save recipes.
 class RecipeStore: ObservableObject {
-    @Published var recipes: [Recipe] = []
+    @Published var recipes: [Recipe] = []  // Only for user-added recipes
     private let iCloudStore = NSUbiquitousKeyValueStore.default
-    private let userDefaultsKey = "recipes"
+    private let userDefaultsKey = "userRecipes"
+    
+    // Default recipes constant (not saved to UserDefaults or iCloud)
+    static let defaultRecipes: [Recipe] = [
+        Recipe(
+            name: "Spicy BBQ Rub",
+            ingredients: [
+                Ingredient(name: "Paprika", amount: 2, unit: "T"),
+                Ingredient(name: "Brown Sugar", amount: 2, unit: "T"),
+                Ingredient(name: "Salt", amount: 1, unit: "t"),
+                Ingredient(name: "Pepper", amount: 1, unit: "t")
+            ],
+            servings: 4
+        ),
+        Recipe(
+            name: "Italian Herb Mix",
+            ingredients: [
+                Ingredient(name: "Basil", amount: 1, unit: "T"),
+                Ingredient(name: "Oregano", amount: 1, unit: "T"),
+                Ingredient(name: "Thyme", amount: 1, unit: "t"),
+                Ingredient(name: "Rosemary", amount: 1, unit: "t")
+            ],
+            servings: 3
+        ),
+        Recipe(
+            name: "Curry Powder",
+            ingredients: [
+                Ingredient(name: "Turmeric", amount: 2, unit: "t"),
+                Ingredient(name: "Cumin", amount: 1, unit: "t"),
+                Ingredient(name: "Coriander", amount: 1, unit: "t"),
+                Ingredient(name: "Cardamom", amount: 0.5, unit: "t")
+            ],
+            servings: 6
+        ),
+        Recipe(
+            name: "Pumpkin Pie Spice",
+            ingredients: [
+                Ingredient(name: "Cinnamon", amount: 2, unit: "T"),
+                Ingredient(name: "Ginger", amount: 1, unit: "t"),
+                Ingredient(name: "Nutmeg", amount: 1, unit: "t"),
+                Ingredient(name: "Allspice", amount: 0.5, unit: "t"),
+                Ingredient(name: "Cloves", amount: 0.5, unit: "t")
+            ],
+            servings: 4
+        ),
+        Recipe(
+            name: "Taco Seasoning",
+            ingredients: [
+                Ingredient(name: "Chili Powder", amount: 1, unit: "T"),
+                Ingredient(name: "Cumin", amount: 1, unit: "t"),
+                Ingredient(name: "Paprika", amount: 1, unit: "t"),
+                Ingredient(name: "Garlic Powder", amount: 1, unit: "t"),
+                Ingredient(name: "Onion Powder", amount: 0.5, unit: "t"),
+                Ingredient(name: "Oregano", amount: 0.5, unit: "t"),
+                Ingredient(name: "Salt", amount: 0.5, unit: "t"),
+                Ingredient(name: "Black Pepper", amount: 0.25, unit: "t")
+            ],
+            servings: 4
+        )
+    ]
     
     init() {
         self.loadRecipes()
@@ -29,10 +88,17 @@ class RecipeStore: ObservableObject {
     @objc private func icloudStoreDidChange(notification: NSNotification) {
         self.loadRecipesFromiCloud()
     }
-    
+
     func addRecipe(_ recipe: Recipe) {
         recipes.append(recipe)
         saveRecipes()
+    }
+    
+    func updateRecipe(_ updatedRecipe: Recipe) {
+        if let index = recipes.firstIndex(where: { $0.id == updatedRecipe.id }) {
+            recipes[index] = updatedRecipe
+            saveRecipes()
+        }
     }
 
     func removeRecipe(_ recipe: Recipe) {
@@ -41,56 +107,34 @@ class RecipeStore: ObservableObject {
             saveRecipes()
         }
     }
-    
-    /// Updates an existing recipe in the store
-    func updateRecipe(_ updatedRecipe: Recipe) {
-        if let index = recipes.firstIndex(where: { $0.id == updatedRecipe.id }) {
-            recipes[index] = updatedRecipe
-            saveRecipes() // Persist the changes
-        }
-    }
-    
-    // Save recipes to both UserDefaults and iCloud
+
+    // Save only user-added recipes to UserDefaults and iCloud
     private func saveRecipes() {
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(recipes) {
-            // Save to UserDefaults
             UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
-            print("Recipes saved successfully to UserDefaults.")
-            
-            // Save to iCloud
             iCloudStore.set(encoded, forKey: userDefaultsKey)
             iCloudStore.synchronize()
-            print("Recipes saved successfully to iCloud.")
-        } else {
-            print("Failed to encode and save recipes.")
         }
     }
-    
-    // Load recipes from UserDefaults first, then iCloud if not available
+
     private func loadRecipes() {
+        // Load only user-added recipes
         if let data = UserDefaults.standard.data(forKey: userDefaultsKey) {
             let decoder = JSONDecoder()
             if let decoded = try? decoder.decode([Recipe].self, from: data) {
                 recipes = decoded
-                print("Recipes loaded from UserDefaults: \(recipes)")
                 return
             }
         }
-        print("No saved recipes found in UserDefaults. Attempting to load from iCloud.")
         loadRecipesFromiCloud()
     }
-    
-    // Load recipes from iCloud
+
     private func loadRecipesFromiCloud() {
         if let data = iCloudStore.data(forKey: userDefaultsKey),
            let decoded = try? JSONDecoder().decode([Recipe].self, from: data) {
             recipes = decoded
-            print("Recipes loaded from iCloud: \(recipes)")
-            // Save to UserDefaults for local persistence
             UserDefaults.standard.set(data, forKey: userDefaultsKey)
-        } else {
-            print("No saved recipes found in iCloud.")
         }
     }
 }

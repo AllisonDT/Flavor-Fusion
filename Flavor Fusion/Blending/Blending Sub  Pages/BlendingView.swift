@@ -45,7 +45,7 @@ struct BlendingView: View {
             }
 
             // Serialize the ingredients array to a custom delimited string in ounces
-            let serializedIngredients = ingredients.map { "\($0.containerNumber):\(convertToOunces(amount: $0.amount, unit: $0.unit))" }.joined(separator: ";")
+            let serializedIngredients = ingredients.map { "\(String(describing: $0.containerNumber)):\(convertToOunces(amount: $0.amount, unit: $0.unit))" }.joined(separator: ";")
 
             // Append the end marker "#END" to signal completion
             let fullSerializedIngredients = serializedIngredients + ";#END"
