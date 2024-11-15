@@ -42,6 +42,8 @@ struct TeamMemberView: View {
             // Displaying team member's name and position
             Text(member.name)
                 .font(.headline)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
             Text(member.position)
                 .font(.subheadline)
                 .foregroundColor(.secondary)

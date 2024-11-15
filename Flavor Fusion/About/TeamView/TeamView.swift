@@ -15,11 +15,11 @@ struct TeamView: View {
     /// An array containing the team members, their positions, and biographies.
     let teamMembers = [
         TeamMember(name: "Ryan Latterell", position: "Project Manager", biography: "Ryan's Biography", imageName: "ryan"),
-        TeamMember(name: "Allison Turner", position: "Developer", biography: "Allison's Biography", imageName: "allison"),
-        TeamMember(name: "Samuel Pabon", position: "Engineer", biography: "Sam's Biography", imageName: "sam"),
-        TeamMember(name: "Alexandra Figueroa", position: "Engineer", biography: "Alex's Biography", imageName: "alex"),
+        TeamMember(name: "Allison Turner", position: "App Developer", biography: "Allison's Biography", imageName: "allison"),
+        TeamMember(name: "Samuel Pabon", position: "Electronics Engineer", biography: "Sam's Biography", imageName: "sam"),
+        TeamMember(name: "Alexandra Figueroa", position: "CAD Queen", biography: "Alex's Biography", imageName: "alex"),
         TeamMember(name: "Thomas Spurlock", position: "Engineer", biography: "Thomas' Biography", imageName: "thomas"),
-        TeamMember(name: "Ethan Butterfield", position: "Engineer", biography: "Ethan's Biography", imageName: nil) // No image for Ethan
+        TeamMember(name: "Ethan Butterfield", position: "Engineer", biography: "Ethan's Biography", imageName: "ethan")
     ]
     
     @State private var selectedMember: TeamMember? = nil
