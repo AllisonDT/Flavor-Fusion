@@ -19,38 +19,39 @@ struct BiographyView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                // Display team member's picture or silhouette
-                if let imageName = member.imageName, let uiImage = UIImage(named: imageName) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .clipShape(Circle())
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 100, height: 100)
-                        .padding(.bottom, 20)
-                } else {
-                    Image(systemName: "person.fill")
-                        .resizable()
-                        .clipShape(Circle())
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 100, height: 100)
-                        .padding(.bottom, 20)
-                }
+            ScrollView {
+                VStack {
+                    // Display team member's picture or silhouette
+                    if let imageName = member.imageName, let uiImage = UIImage(named: imageName) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .clipShape(Circle())
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 100)
+                            .padding(.bottom, 10)
+                    } else {
+                        Image(systemName: "person.fill")
+                            .resizable()
+                            .clipShape(Circle())
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 100, height: 100)
+                            .padding(.bottom, 20)
+                    }
 
-                Text(member.name)
-                    .font(.largeTitle)
-                    .padding(.bottom, 5)
-                Text(member.position)
-                    .font(.title)
-                    .foregroundColor(.secondary)
-                    .padding(.bottom, 20)
-                Text(member.biography)
-                    .font(.body)
-                    .padding()
-                Spacer()
+                    Text(member.name)
+                        .font(.largeTitle)
+                    Text(member.position)
+                        .font(.title)
+                        .foregroundColor(.secondary)
+
+                    Text(member.biography)
+                        .font(.body)
+                        .padding()
+                    
+                    Spacer()
+                }
+                .padding()
             }
-            .padding()
-            .padding(.top, 20)
             .background(Color(UIColor.systemBackground))
             .navigationBarItems(trailing: Button(action: {
                 dismiss()

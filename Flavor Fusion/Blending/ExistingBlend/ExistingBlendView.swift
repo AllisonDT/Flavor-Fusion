@@ -15,18 +15,17 @@ import SwiftUI
 /// - Parameters:
 ///   - recipeStore: An observed object that manages the list of recipes.
 struct ExistingBlendView: View {
+    /// The currently selected recipe.
     @State private var selectedRecipe: Recipe?
+    
+    /// A flag indicating whether the recipe details popover is presented.
     @State private var isRecipeDetailsPresented = false
-
+    
+    /// The store object that manages the list of recipes.
     @ObservedObject var recipeStore = RecipeStore()
-    @ObservedObject var spiceDataViewModel: SpiceDataViewModel
-    @EnvironmentObject var bleManager: BLEManager
-
-    // Combine default and user-added recipes
-    var combinedRecipes: [Recipe] {
-        RecipeStore.defaultRecipes + recipeStore.recipes
-    }
-
+    @ObservedObject var spiceDataViewModel: SpiceDataViewModel // Add this
+    @EnvironmentObject var bleManager: BLEManager // Add BLEManager as EnvironmentObject
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -43,10 +42,11 @@ struct ExistingBlendView: View {
                 }
                 
                 ScrollView {
-                    // Display each recipe in a single list
-                    ForEach(combinedRecipes) { recipe in
+                    // Display each recipe in a VStack
+                    ForEach(recipeStore.recipes) { recipe in
                         ExistingRecipesRows(recipe: recipe, spiceDataViewModel: spiceDataViewModel)
                             .onTapGesture {
+                                // Set the selected recipe when a recipe is tapped
                                 self.selectedRecipe = recipe
                                 self.isRecipeDetailsPresented = true
                             }
@@ -55,11 +55,6 @@ struct ExistingBlendView: View {
                 .padding()
                 
                 Spacer()
-            }
-            .sheet(isPresented: $isRecipeDetailsPresented) {
-                if let selectedRecipe = selectedRecipe {
-                    MixRecipePreview(recipe: selectedRecipe, isPresented: $isRecipeDetailsPresented, spiceDataViewModel: spiceDataViewModel)
-                }
             }
         }
     }

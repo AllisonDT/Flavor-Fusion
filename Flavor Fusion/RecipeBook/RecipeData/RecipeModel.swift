@@ -15,7 +15,7 @@ struct Ingredient: Codable {
     var name: String
     var amount: Double
     var unit: String
-    var containerNumber: Int?
+    var containerNumber: Int
 }
 
 /// A struct representing a recipe.
