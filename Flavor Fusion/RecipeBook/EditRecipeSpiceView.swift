@@ -25,8 +25,8 @@ struct EditRecipeSpiceView: View {
     @State private var fractionalAmount = ""
     
     let spiceQuantities = Array(0...9)
-    let fractions = ["", "½", "¼", "⅛"]
-    let fractionValues: [String: Double] = ["½": 0.5, "¼": 0.25, "⅛": 0.125, "": 0]
+    let fractions = ["", "⅞", "¾", "⅝", "½", "⅜", "¼", "⅛"]
+    let fractionValues: [String: Double] = ["⅞": 0.875, "¾": 0.75, "⅝": 0.625, "½": 0.5, "⅜": 0.375, "¼": 0.25, "⅛": 0.125, "": 0]
     let unitOptions: [String]
 
     var body: some View {
@@ -101,6 +101,16 @@ struct EditRecipeSpiceView: View {
                 .shadow(color: .gray, radius: 2, x: 0, y: 2)
         )
         .padding(.vertical, 5)
+        .onAppear {
+            initializeAmounts()
+        }
+    }
+
+    private func initializeAmounts() {
+        guard let totalAmount = selectedSpices[spice]?.0 else { return }
+        wholeAmount = Int(totalAmount)
+        let fractionalPart = totalAmount - Double(wholeAmount)
+        fractionalAmount = fractionValues.first(where: { $0.value == fractionalPart })?.key ?? ""
     }
 
     private func updateSelectedSpiceAmount() {

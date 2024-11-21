@@ -24,7 +24,7 @@ struct NewBlendSpiceView: View {
     @State private var unit: String = "Tsp"
     
     private let wholeAmounts = Array(0...9)
-    private let fractions = ["", "½", "¼", "⅛"]
+    private let fractions = ["", "⅞", "¾", "⅝", "½", "⅜", "¼", "⅛"]
     private let units = ["Tsp", "Tbsp"]
 
     var body: some View {
@@ -124,6 +124,10 @@ struct NewBlendSpiceView: View {
         case "½": return 0.5
         case "¼": return 0.25
         case "⅛": return 0.125
+        case "⅞": return 0.875
+        case "¾": return 0.75
+        case "⅝": return 0.625
+        case "⅜": return 0.375
         default: return 0
         }
     }

@@ -24,8 +24,8 @@ struct AddRecipeSpiceView: View {
     @State private var fractionalAmount = ""
     
     let spiceQuantities = Array(0...9)
-    let fractions = ["", "½", "¼", "⅛"]
-    let fractionValues: [String: Double] = ["½": 0.5, "¼": 0.25, "⅛": 0.125, "": 0]
+    let fractions = ["", "⅞", "¾", "⅝", "½", "⅜", "¼", "⅛"]
+    let fractionValues: [String: Double] = ["⅞": 0.875, "¾": 0.75, "⅝": 0.625, "½": 0.5, "⅜": 0.375, "¼": 0.25, "⅛": 0.125, "": 0]
     let unitOptions: [String]
 
     var body: some View {

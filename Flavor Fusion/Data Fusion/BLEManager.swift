@@ -22,7 +22,7 @@ class BLEManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeriph
 
     let spiceServiceUUID = CBUUID(string: "FFE0")
     let dataCharacteristicUUID = CBUUID(string: "FFE1")
-    let targetPeripheralName = "HMSoft"  // The specific peripheral name you're expecting
+    let targetPeripheralName = "HMSoft"
 
     init(spiceDataViewModel: SpiceDataViewModel) {
         self.spiceDataViewModel = spiceDataViewModel
